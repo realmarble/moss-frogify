@@ -9,6 +9,7 @@
   ],
   "version": "0.1",
   "scripts": [
+      "frogpets.js",
       "main.js"
     ],
     "styles": [
@@ -18,12 +19,12 @@
     "verified": "11"
   },
   "packs": [],
-"url": "https://github.com/realmarble/moss-lancer",
-"manifest": "https://github.com/realmarble/moss-lancer/releases/download/0.0.7.1/module.json",
-"download": "https://github.com/realmarble/moss-lancer/releases/download/0.0.7.1/moss-lancer.zip",
+"url": "https://github.com/realmarble/moss-frogify",
+"manifest": "https://github.com/realmarble/moss-frogify/releases/download/0.1/module.json",
+"download": "https://github.com/realmarble/moss-frogify/releases/download/0.1/moss-lancer.zip",
 "license": "MIT",
-"readme": "https://github.com/realmarble/moss-lancer",
-"bugs": "https://github.com/realmarble/moss-lancer/issues",
-"changelog": "https://github.com/realmarble/moss-lancer/releases",
-"socket": true
+"readme": "https://github.com/realmarble/moss-frogify",
+"bugs": "https://github.com/realmarble/moss-frogify/issues",
+"changelog": "https://github.com/realmarble/moss-frogify/releases",
+"socket": false
 }
