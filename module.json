@@ -1,0 +1,29 @@
+{
+  "id": "moss-frogify",
+  "title": "Frogify",
+  "description": "Add a pet frog to your table.",
+  "authors": [
+    {
+    "name": "moss"
+    }
+  ],
+  "version": "0.1",
+  "scripts": [
+      "main.js"
+    ],
+    "styles": [
+    ],
+  "compatibility": {
+    "minimum": "10",
+    "verified": "11"
+  },
+  "packs": [],
+"url": "https://github.com/realmarble/moss-lancer",
+"manifest": "https://github.com/realmarble/moss-lancer/releases/download/0.0.7.1/module.json",
+"download": "https://github.com/realmarble/moss-lancer/releases/download/0.0.7.1/moss-lancer.zip",
+"license": "MIT",
+"readme": "https://github.com/realmarble/moss-lancer",
+"bugs": "https://github.com/realmarble/moss-lancer/issues",
+"changelog": "https://github.com/realmarble/moss-lancer/releases",
+"socket": true
+}
