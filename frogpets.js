@@ -76,8 +76,8 @@ var arr_names = ["Abs", "Agnus", "Al-gea", "Amphibulus", "Scrubby", "Crusty", "B
 var arr_states = ["feed", "pet", "hug", "comfort"];
 
 //strings
-var str_path_img = "IMG";
-var str_path_snd = "SND";
+var str_path_img = "modules/moss-frogify/IMG";
+var str_path_snd = "modules/moss-frogify/SND";
 //sounds
 var snd_oliver;
 var snd_princess;
@@ -139,6 +139,9 @@ function fp_mobilecheck(){
 	return check;
 }
 
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 function fp_hidethis(str_elem){
 	document.getElementById(str_elem).style.visibility = "hidden";
 }
@@ -202,24 +205,27 @@ function fp_randomTarget(frognum){
 
 //title formats
 function fp_return_title(str_type){
-	var str_return = "";
-	if(str_type == "feed"){
-		str_return = "is hungry";
-	}
-	if(str_type == "pet"){
-		str_return = "wants to be pet";
-	}
-	if(str_type == "hug"){
-		str_return = "wants a hug";
-	}
-	if(str_type == "comfort"){
-		str_return = "needs comforting";
-	}
-	return str_return;
+    var str_return = "";
+    switch(str_type) {
+        case "feed":
+            str_return = "is hungry";
+            break;
+        case "pet":
+            str_return = "wants to be pet";
+            break;
+        case "hug":
+            str_return = "wants a hug";
+            break;
+        case "comfort":
+            str_return = "needs comforting";
+            break;
+    }
+    return str_return;
 }
 
 //help
 function fp_return_void(){
+	//this is lovely, but console pollution is not really what we need here
 	if(Math.random()*100 > 50){
 		console.log(arr_voidvoice[Math.ceil(Math.random()*arr_voidvoice.length)-1]);
 	}else{
@@ -258,17 +264,6 @@ function fp_handle_request(frogvar, frognum, str_type){
 	}
 }
 
-//kill frog
-function fp_killfrog(frogvar, frognum){
-	console.log("RIP "+window["str_name_frog0"+String(frognum)]+". "+arr_death[Math.ceil(Math.random()*arr_death.length)-1]);
-	//reset everything here
-	window["str_frog0"+String(frognum)+"_curr_comment"] = "default";
-	window["num_frog0"+String(frognum)+"_comment"] = -1;
-	window["bool_death_frog0"+frognum] = true;
-	//remove and check how many are dead (nofrogpets)
-	document.getElementById(frogvar.id).remove();
-	fp_checkdeaths();
-}
 
 //check if they're all dead
 //if they are then open a little prompt
@@ -319,47 +314,7 @@ function fp_checkdeaths(){
 	}
 }
 
-//closing a frog
-function close_frog(frogvar, frognum){
-	//
-	//play sound
-	if(frognum == 1){
-		//stop first
-		if(snd_oliver != undefined){
-			snd_oliver.pause();
-			fp_return_void();
-		}
-		snd_oliver = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_oliver[Math.ceil(Math.random()*arr_snd_deaths_oliver.length)-1]+".mp3");
-		snd_oliver.play();
-		snd_oliver.onended = function(){ fp_killfrog(frogvar, frognum); };
-		//
-	}
-	if(frognum == 2){
-		if(snd_ralph != undefined){
-			snd_ralph.pause();
-			fp_return_void();
-		}
-		snd_ralph = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_ralph[Math.ceil(Math.random()*arr_snd_deaths_ralph.length)-1]+".mp3");
-		snd_ralph.play();
-		snd_ralph.onended = function(){ fp_killfrog(frogvar, frognum); };
-		//
-	}
-	if(frognum == 3){
-		if(snd_princess != undefined){
-			snd_princess.pause();
-			fp_return_void();
-		}
-		snd_princess = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_princess[Math.ceil(Math.random()*arr_snd_deaths_princess.length)-1]+".mp3");
-		snd_princess.play();
-		snd_princess.onended = function(){ fp_killfrog(frogvar, frognum); };
-		//
-	}
-	//animation
-	fp_setFrogAnimation(frognum, "death");
-	//clear interval
-	clearInterval(window["int_frog0"+String(frognum)+"_move"]);
-	
-}
+
 
 //play reaction audio (yes thank you, or not that is not what i asked for)
 function fp_snd_reaction(frognum, str_reaction){
@@ -371,7 +326,7 @@ function fp_snd_reaction(frognum, str_reaction){
 	if(frognum == 1){
 		if(snd_oliver != undefined){
 			snd_oliver.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		//get array
 		arr_snd = window["arr_reactions_"+str_reaction+"_oliver"];
@@ -382,7 +337,7 @@ function fp_snd_reaction(frognum, str_reaction){
 	if(frognum == 2){
 		if(snd_ralph != undefined){
 			snd_ralph.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		//get array
 		arr_snd = window["arr_reactions_"+str_reaction+"_ralph"];
@@ -393,7 +348,7 @@ function fp_snd_reaction(frognum, str_reaction){
 	if(frognum == 3){
 		if(snd_princess != undefined){
 			snd_princess.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		//get array
 		arr_snd = window["arr_reactions_"+str_reaction+"_princess"];
@@ -410,7 +365,7 @@ function fp_snd_travel(frognum){
 		//stop first
 		if(snd_oliver != undefined){
 			snd_oliver.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_oliver = new Audio(str_path_snd+"/MOVE/"+arr_snd_move_oliver[Math.ceil(Math.random()*arr_snd_move_oliver.length)-1]+".mp3");
 		snd_oliver.play();
@@ -420,7 +375,7 @@ function fp_snd_travel(frognum){
 	if(frognum == 2){
 		if(snd_ralph != undefined){
 			snd_ralph.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_ralph = new Audio(str_path_snd+"/MOVE/"+arr_snd_move_ralph[Math.ceil(Math.random()*arr_snd_move_ralph.length)-1]+".mp3");
 		snd_ralph.play();
@@ -430,7 +385,7 @@ function fp_snd_travel(frognum){
 	if(frognum == 3){
 		if(snd_princess != undefined){
 			snd_princess.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_princess = new Audio(str_path_snd+"/MOVE/"+arr_snd_move_princess[Math.ceil(Math.random()*arr_snd_move_princess.length)-1]+".mp3");
 		snd_princess.play();
@@ -447,7 +402,7 @@ function fp_sound_comment(frogvar, frognum){
 		//stop first
 		if(snd_oliver != undefined){
 			snd_oliver.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_oliver = new Audio(str_path_snd+"/DEFAULT/"+arr_snd_default_oliver[Math.ceil(Math.random()*arr_snd_default_oliver.length)-1]+".mp3");
 		snd_oliver.play();
@@ -457,7 +412,7 @@ function fp_sound_comment(frogvar, frognum){
 	if(frognum == 2){
 		if(snd_ralph != undefined){
 			snd_ralph.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_ralph = new Audio(str_path_snd+"/DEFAULT/"+arr_snd_default_ralph[Math.ceil(Math.random()*arr_snd_default_ralph.length)-1]+".mp3");
 		snd_ralph.play();
@@ -467,7 +422,7 @@ function fp_sound_comment(frogvar, frognum){
 	if(frognum == 3){
 		if(snd_princess != undefined){
 			snd_princess.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_princess = new Audio(str_path_snd+"/DEFAULT/"+arr_snd_default_princess[Math.ceil(Math.random()*arr_snd_default_princess.length)-1]+".mp3");
 		snd_princess.play();
@@ -484,7 +439,7 @@ function fp_sound_request(frogvar, frognum, str_sound){
 		//stop first
 		if(snd_oliver != undefined){
 			snd_oliver.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_oliver = new Audio(str_path_snd+"/ACTION/"+str_sound+".mp3");
 		snd_oliver.play();
@@ -494,7 +449,7 @@ function fp_sound_request(frogvar, frognum, str_sound){
 	if(frognum == 2){
 		if(snd_ralph != undefined){
 			snd_ralph.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_ralph = new Audio(str_path_snd+"/ACTION/"+str_sound+".mp3");
 		snd_ralph.play();
@@ -504,7 +459,7 @@ function fp_sound_request(frogvar, frognum, str_sound){
 	if(frognum == 3){
 		if(snd_princess != undefined){
 			snd_princess.pause();
-			fp_return_void();
+			//fp_return_void();
 		}
 		snd_princess = new Audio(str_path_snd+"/ACTION/"+str_sound+".mp3");
 		snd_princess.play();
@@ -513,100 +468,7 @@ function fp_sound_request(frogvar, frognum, str_sound){
 	}
 }
 
-//various "actions" for frog (comment, warn about dying, movement)
-function frog_actions(frogvar, frognum){
-	//vars for walking
-	var num_x = parseInt(frogvar.style.left);
-	var num_y = parseInt(frogvar.style.top);
-	var num_targX = window["num_frog0"+String(frognum)+"_targX"];
-	var num_targY = window["num_frog0"+String(frognum)+"_targY"];
-	var num_distX = num_targX - num_x;
-	var num_distY = num_targY - num_y;
-	
-	//get current "state" by reading what img is visible
-	var idle = window.getComputedStyle(document.getElementById("frog0"+String(frognum)+"_window_frog_default"));
-	var walk = window.getComputedStyle(document.getElementById("frog0"+String(frognum)+"_window_frog_walk"));
-	
-	var curr_comment = window["str_frog0"+String(frognum)+"_curr_comment"];
-	var num_comment = window["num_frog0"+String(frognum)+"_comment"];
-	
-	var clip_name = "";
-	//get name for associating with array (this part is sloppy, should re-visit)
-	if(frognum == 1){
-		clip_name = "oliver"
-	}
-	if(frognum == 2){
-		clip_name = "ralph";
-	}
-	if(frognum == 3){
-		clip_name = "princess";
-	}
-	
-	//chatter & making requests -- rare
-	if(Math.random()*100 < 2 && idle.visibility == "visible"){
-		//default comment
-		if(curr_comment == "default"){
-			//sound_comment(clip, "default");
-			fp_sound_comment(frogvar, frognum);
-		}
-		//set a request comment
-		if(curr_comment == "default" && Math.random()*100 < 25){
-			//set to new request
-			window["str_frog0"+String(frognum)+"_curr_comment"] = arr_states[Math.ceil(Math.random()*arr_states.length)-1];
-			curr_comment = window["str_frog0"+String(frognum)+"_curr_comment"];
-			//reset first
-			window["num_frog0"+String(frognum)+"_comment"] = -1;
-			//set title of frog window
-			document.getElementById("frog0"+String(frognum)+"window_frogname").innerHTML = window["str_name_frog0"+String(frognum)]+" "+fp_return_title(window["str_frog0"+String(frognum)+"_curr_comment"]);
-			//say first on
-			fp_sound_request(frogvar, frognum, window["arr_snd_action_"+curr_comment+"_"+clip_name][0]);
-		}
-		//nag (count through sound array, if end is reached frog dies)
-		if(curr_comment != "default"){
-			//count down
-			window["num_frog0"+String(frognum)+"_comment"] += 1;
-			num_comment = window["num_frog0"+String(frognum)+"_comment"];
-			//check against array (kill frog)
-			if(num_comment > window["arr_snd_action_"+curr_comment+"_"+clip_name].length - 1){
-				close_frog(frogvar, frognum);
-			}else{
-				fp_sound_request(frogvar, frognum, window["arr_snd_action_"+curr_comment+"_"+clip_name][num_comment]);
-			}
-		}
 
-	};
-	
-	//pick a location to move to (start migration) -- least rare
-	if(Math.random()*100 > 98 && idle.visibility == "visible"){
-		
-		if(Math.random()*100 < 70){
-			//play sound for traveling ("i am going to there")
-			fp_snd_travel(frognum);
-		}
-		//get a random x y on screen to migrate to
-		fp_randomTarget(frognum);
-		fp_setFrogAnimation(frognum, "walk");
-		
-		//countdown till cancel
-		window["num_frog0"+String(frognum)+"_cnt"] = 30;
-
-	}
-	//move to location (migrating now)
-	//movement is intentionally jerky because that's cute and clumsy
-	if(Math.random()*100 > 40 && walk.visibility == "visible"){
-		
-		frogvar.style.left = String(num_x+num_distX*.07)+'px';
-		frogvar.style.top = String(num_y+num_distY*.07)+'px';
-		window["num_frog0"+String(frognum)+"_cnt"] -= 1;
-					
-		//check if arrived
-		if(parseInt(frogvar.style.left) == num_targX || parseInt(frogvar.style.top) == num_targY || window["num_frog0"+String(frognum)+"_cnt"] <= 0){
-			fp_setFrogAnimation(frognum, "default");
-		}
-		
-	}
-
-}
 
 function fp_appendToFrog(frogvar, str_id, str_imgpath){
 	var window_elem = document.createElement("div");
@@ -615,101 +477,6 @@ function fp_appendToFrog(frogvar, str_id, str_imgpath){
 	frogvar.appendChild(window_elem);
 	window_elem.innerHTML = '<img src='+str_imgpath+'>';
 	window_elem.style.position = 'absolute';
-}
-
-function fp_makefrog(frogvar, frognum){
-	//this frog is now alive
-	window["bool_death_frog0"+frognum] = false;
-	//set name
-	window["str_name_frog0"+String(frognum)] = arr_names[Math.ceil(Math.random()*arr_names.length)-1];
-	//populate
-	frogvar = document.createElement("div");
-	frogvar.id = "frog0"+String(frognum);
-	frogvar.className = "frogpet";
-	//inner (populate)
-	//default animation
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"_window_frog_default", str_path_img+"/IMG_FROG0"+String(frognum)+"_IDLE.gif");
-	//walk animation
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"_window_frog_walk", str_path_img+"/IMG_FROG0"+String(frognum)+"_WALK.gif");
-	//talk animation
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"_window_frog_talk", str_path_img+"/IMG_FROG0"+String(frognum)+"_TALK.gif");
-	//death animation
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"_window_frog_death", str_path_img+"/IMG_FROG0"+String(frognum)+"_DEATH.gif");
-	//window frame
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"_window_frame", str_path_img+"/IMG_UI_WINDOW.png");
-	//various nav/ui
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"window_close", str_path_img+"/IMG_UI_CLOSE.png");
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"window_feed", str_path_img+"/IMG_UI_NAV_FEED.png");
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"window_pet", str_path_img+"/IMG_UI_NAV_PET.png");
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"window_hug", str_path_img+"/IMG_UI_NAV_HUG.png");
-	fp_appendToFrog(frogvar, "frog0"+String(frognum)+"window_comfort", str_path_img+"/IMG_UI_NAV_COMFORT.png");
-	//title - frogname
-	var window_frogname = document.createElement("div");
-	window_frogname.id = "frog0"+String(frognum)+"window_frogname";
-	window_frogname.className = "frogpet";
-	frogvar.appendChild(window_frogname);
-	window_frogname.innerHTML = window["str_name_frog0"+String(frognum)];
-	window_frogname.style.position = 'absolute';
-	window_frogname.style.font = "14px arial, sans-serif";
-	window_frogname.style.color = "black";
-	window_frogname.style.top = '4px';
-	window_frogname.style.left = '30px';
-	
-	//append all
-	document.getElementsByTagName("body")[0].appendChild(frogvar);
-
-	//after populating, other placements
-	var btn_close = document.getElementById("frog0"+String(frognum)+"window_close");
-	var btn_feed = document.getElementById("frog0"+String(frognum)+"window_feed");
-	var btn_pet = document.getElementById("frog0"+String(frognum)+"window_pet");
-	var btn_hug = document.getElementById("frog0"+String(frognum)+"window_hug");
-	var btn_comfort = document.getElementById("frog0"+String(frognum)+"window_comfort");
-
-	btn_close.style.top = '4px';
-	btn_close.style.left = '4px';
-	btn_close.style.cursor = 'pointer';
-	
-	btn_feed.style.top = '23px';
-	btn_feed.style.left = '4px';
-	btn_feed.style.cursor = 'pointer';
-	
-	btn_pet.style.top = '23px';
-	btn_pet.style.left = '46px';
-	btn_pet.style.cursor = 'pointer';
-	
-	btn_hug.style.top = '23px';
-	btn_hug.style.left = '83px';
-	btn_hug.style.cursor = 'pointer';
-	
-	btn_comfort.style.top = '23px';
-	btn_comfort.style.left = '165px';
-	btn_comfort.style.cursor = 'pointer';
-	
-	//nav listeners
-	btn_close.addEventListener("click", function(){ close_frog(frogvar,frognum); });
-	
-	btn_feed.addEventListener("click", function(){ fp_handle_request(frogvar, frognum, "feed") });
-	btn_pet.addEventListener("click", function(){ fp_handle_request(frogvar, frognum, "pet") });
-	btn_hug.addEventListener("click", function(){ fp_handle_request(frogvar, frognum, "hug") });
-	btn_comfort.addEventListener("click", function(){ fp_handle_request(frogvar, frognum, "comfort") });
-	
-	//style
-	frogvar.style.position = 'absolute';
-	//random placement
-	frogvar.style.top = String(fp_math_randRange(fp_returnDocHeight() / 2 - num_frogHeight / 2 - 100, fp_returnDocHeight() / 2 - num_frogHeight / 2 + 100))+'px';
-	frogvar.style.left = String(fp_math_randRange(fp_returnDocWidth() / 2 - num_frogWidth / 2 - 100, fp_returnDocWidth( )/ 2 - num_frogWidth / 2 + 100))+'px';
-	frogvar.style.width = String(num_frogWidth)+'px';
-	frogvar.style.height = String(num_frogHeight)+'px';
-	frogvar.style.background = 'none';
-	//hide all except for default animation
-	fp_hidethis("frog0"+String(frognum)+"_window_frog_walk");
-	fp_hidethis("frog0"+String(frognum)+"_window_frog_talk");
-	fp_hidethis("frog0"+String(frognum)+"_window_frog_death");
-	//show default
-	//fp_showthis("frog0"+String(frognum)+"_window_frog_default");
-	
-	//intervals
-	window["int_frog0"+String(frognum)+"_move"] = setInterval(function(){ frog_actions(frogvar, frognum); } , 100);
 }
 
 //optional title screen
@@ -761,14 +528,268 @@ function fp_titlescreen(){
 }
 
 //start the frogs
-function init_frogs(){
-	if(bool_death_frog01){
-		fp_makefrog(frog01, 1);
+function init_frog(){ //start single frog chosen randomly
+	var randomInt = getRandomInt(1, 3);
+		switch(randomInt) {
+			case 1:
+				fp_makefrog(frog01, 1);
+				break;
+			case 2:
+				fp_makefrog(frog02, 2);
+				break;
+			case 3:
+				fp_makefrog(frog03, 3);
+				break;
+		}
+	
+}
+class Frog{
+	#element;
+	#frognum;
+	constructor(frognum){
+		this.#frognum = frognum;
+		//this frog is now alive
+		window["bool_death_frog0"+frognum] = false;
+		//set name
+		window["str_name_frog0"+String(frognum)] = arr_names[Math.ceil(Math.random()*arr_names.length)-1];
+		//populate
+		this.#element = document.createElement("div");
+		this.#element.id = "frog0"+String(frognum);
+		this.#element.className = "frogpet";
+		//inner (populate)
+		//default animation
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"_window_frog_default", str_path_img+"/IMG_FROG0"+String(frognum)+"_IDLE.gif");
+		//walk animation
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"_window_frog_walk", str_path_img+"/IMG_FROG0"+String(frognum)+"_WALK.gif");
+		//talk animation
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"_window_frog_talk", str_path_img+"/IMG_FROG0"+String(frognum)+"_TALK.gif");
+		//death animation
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"_window_frog_death", str_path_img+"/IMG_FROG0"+String(frognum)+"_DEATH.gif");
+		//window frame
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"_window_frame", str_path_img+"/IMG_UI_WINDOW.png");
+		//various nav/ui
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"window_close", str_path_img+"/IMG_UI_CLOSE.png");
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"window_feed", str_path_img+"/IMG_UI_NAV_FEED.png");
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"window_pet", str_path_img+"/IMG_UI_NAV_PET.png");
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"window_hug", str_path_img+"/IMG_UI_NAV_HUG.png");
+		fp_appendToFrog(this.#element, "frog0"+String(frognum)+"window_comfort", str_path_img+"/IMG_UI_NAV_COMFORT.png");
+		//title - frogname
+		var window_frogname = document.createElement("div");
+		window_frogname.id = "frog0"+String(frognum)+"window_frogname";
+		window_frogname.className = "frogpet";
+		this.#element.appendChild(window_frogname);
+		window_frogname.innerHTML = window["str_name_frog0"+String(frognum)];
+		window_frogname.style.position = 'absolute';
+		window_frogname.style.font = "14px arial, sans-serif";
+		window_frogname.style.color = "black";
+		window_frogname.style.top = '4px';
+		window_frogname.style.left = '30px';
+		
+		//append all
+		document.getElementsByTagName("body")[0].appendChild(this.#element);
+	
+		//after populating, other placements
+		var btn_close = document.getElementById("frog0"+String(frognum)+"window_close");
+		var btn_feed = document.getElementById("frog0"+String(frognum)+"window_feed");
+		var btn_pet = document.getElementById("frog0"+String(frognum)+"window_pet");
+		var btn_hug = document.getElementById("frog0"+String(frognum)+"window_hug");
+		var btn_comfort = document.getElementById("frog0"+String(frognum)+"window_comfort");
+	
+		btn_close.style.top = '4px';
+		btn_close.style.left = '4px';
+		btn_close.style.cursor = 'pointer';
+		
+		btn_feed.style.top = '23px';
+		btn_feed.style.left = '4px';
+		btn_feed.style.cursor = 'pointer';
+		
+		btn_pet.style.top = '23px';
+		btn_pet.style.left = '46px';
+		btn_pet.style.cursor = 'pointer';
+		
+		btn_hug.style.top = '23px';
+		btn_hug.style.left = '83px';
+		btn_hug.style.cursor = 'pointer';
+		
+		btn_comfort.style.top = '23px';
+		btn_comfort.style.left = '165px';
+		btn_comfort.style.cursor = 'pointer';
+		
+		//nav listeners
+		btn_close.addEventListener("click", ()=>{ close_frog(this.#element,frognum); });
+		
+		btn_feed.addEventListener("click", ()=>{ fp_handle_request(this.#element, frognum, "feed") });
+		btn_pet.addEventListener("click", ()=>{ fp_handle_request(this.#element, frognum, "pet") });
+		btn_hug.addEventListener("click", ()=>{ fp_handle_request(this.#element, frognum, "hug") });
+		btn_comfort.addEventListener("click", ()=>{ fp_handle_request(this.#element, frognum, "comfort") });
+		
+		//style
+		this.#element.style.position = 'absolute';
+		//random placement
+		this.#element.style.top = String(fp_math_randRange(fp_returnDocHeight() / 2 - num_frogHeight / 2 - 100, fp_returnDocHeight() / 2 - num_frogHeight / 2 + 100))+'px';
+		this.#element.style.left = String(fp_math_randRange(fp_returnDocWidth() / 2 - num_frogWidth / 2 - 100, fp_returnDocWidth( )/ 2 - num_frogWidth / 2 + 100))+'px';
+		this.#element.style.width = String(num_frogWidth)+'px';
+		this.#element.style.height = String(num_frogHeight)+'px';
+		this.#element.style.background = 'none';
+		//hide all except for default animation
+		fp_hidethis("frog0"+String(frognum)+"_window_frog_walk");
+		fp_hidethis("frog0"+String(frognum)+"_window_frog_talk");
+		fp_hidethis("frog0"+String(frognum)+"_window_frog_death");
+		//show default
+		//fp_showthis("frog0"+String(frognum)+"_window_frog_default");
+		
+		//intervals
+		window["int_frog0"+String(frognum)+"_move"] = setInterval(()=>{ frog_actions(this.#element, frognum); } , 100);
 	}
-	if(bool_death_frog02){
-		fp_makefrog(frog02, 2);
+	//kill frog
+	kill(){
+	//console.log("RIP "+window["str_name_frog0"+String(frognum)]+". "+arr_death[Math.ceil(Math.random()*arr_death.length)-1]);
+	//reset everything here
+	window["str_frog0"+String(this.#frognum)+"_curr_comment"] = "default";
+	window["num_frog0"+String(this.#frognum)+"_comment"] = -1;
+	window["bool_death_frog0"+this.#frognum] = true;
+	//remove and check how many are dead (nofrogpets)
+	document.getElementById(this.#element).remove();
+	//fp_checkdeaths();
+	//foundry has issues handling the ui due to the way it was made.
 	}
-	if(bool_death_frog03){
-		fp_makefrog(frog03, 3);
+	//closing a frog
+	close(){
+	//
+	//play sound
+	if(this.#frognum == 1){
+		//stop first
+		if(snd_oliver != undefined){
+			snd_oliver.pause();
+			//fp_return_void();
+		}
+		snd_oliver = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_oliver[Math.ceil(Math.random()*arr_snd_deaths_oliver.length)-1]+".mp3");
+		snd_oliver.play();
+		snd_oliver.onended = this.kill()
+		//
 	}
+	if(this.#frognum == 2){
+		if(snd_ralph != undefined){
+			snd_ralph.pause();
+			//fp_return_void();
+		}
+		snd_ralph = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_ralph[Math.ceil(Math.random()*arr_snd_deaths_ralph.length)-1]+".mp3");
+		snd_ralph.play();
+		snd_ralph.onended = this.kill()
+		//
+	}
+	if(this.#frognum == 3){
+		if(snd_princess != undefined){
+			snd_princess.pause();
+			//fp_return_void();
+		}
+		snd_princess = new Audio(str_path_snd+"/DEATHS/"+arr_snd_deaths_princess[Math.ceil(Math.random()*arr_snd_deaths_princess.length)-1]+".mp3");
+		snd_princess.play();
+		snd_princess.onended = this.kill()
+		//
+	}
+	//animation
+	fp_setFrogAnimation(this.#frognum, "death");
+	//clear interval
+	clearInterval(window["int_frog0"+String(this.#frognum)+"_move"]);
+	
+}
+//various "actions" for frog (comment, warn about dying, movement)
+    act(){
+	//vars for walking
+	var num_x = parseInt(this.#element.style.left);
+	var num_y = parseInt(this.#element.style.top);
+	var num_targX = window["num_frog0"+String(this.#frognum)+"_targX"];
+	var num_targY = window["num_frog0"+String(this.#frognum)+"_targY"];
+	var num_distX = num_targX - num_x;
+	var num_distY = num_targY - num_y;
+	
+	//get current "state" by reading what img is visible
+	var idle = window.getComputedStyle(document.getElementById("frog0"+String(this.#frognum)+"_window_frog_default"));
+	var walk = window.getComputedStyle(document.getElementById("frog0"+String(this.#frognum)+"_window_frog_walk"));
+	
+	var curr_comment = window["str_frog0"+String(this.#frognum)+"_curr_comment"];
+	var num_comment = window["num_frog0"+String(this.#frognum)+"_comment"];
+	
+	var clip_name = "";
+	//get name for associating with array (this part is sloppy, should re-visit)
+	switch(this.#frognum) {
+        case 1:
+            clip_name = "oliver";
+            break;
+        case 2:
+            clip_name = "ralph";
+            break;
+        case 3:
+            clip_name = "princess";
+            break;
+        default:
+            clip_name = "oliver"; // fallback to oliver in case of incorrect frognum
+    }
+	
+	//chatter & making requests -- rare
+	if(Math.random()*100 < 2 && idle.visibility == "visible"){
+		//default comment
+		if(curr_comment == "default"){
+			//sound_comment(clip, "default");
+			fp_sound_comment(frogvar, frognum);
+		}
+		//set a request comment
+		if(curr_comment == "default" && Math.random()*100 < 25){
+			//set to new request
+			window["str_frog0"+String(this.#frognum)+"_curr_comment"] = arr_states[Math.ceil(Math.random()*arr_states.length)-1];
+			curr_comment = window["str_frog0"+String(this.#frognum)+"_curr_comment"];
+			//reset first
+			window["num_frog0"+String(this.#frognum)+"_comment"] = -1;
+			//set title of frog window
+			document.getElementById("frog0"+String(this.#frognum)+"window_frogname").innerHTML = window["str_name_frog0"+String(this.#frognum)]+" "+fp_return_title(window["str_frog0"+String(this.#frognum)+"_curr_comment"]);
+			//say first on
+			fp_sound_request(frogvar, this.#frognum, window["arr_snd_action_"+curr_comment+"_"+clip_name][0]);
+		}
+		//nag (count through sound array, if end is reached frog dies)
+		if(curr_comment != "default"){
+			//count down
+			window["num_frog0"+String(this.#frognum)+"_comment"] += 1;
+			num_comment = window["num_frog0"+String(this.#frognum)+"_comment"];
+			//check against array (kill frog)
+			if(num_comment > window["arr_snd_action_"+curr_comment+"_"+clip_name].length - 1){
+				close_frog(frogvar, frognum);
+			}else{
+				fp_sound_request(frogvar, this.#frognum, window["arr_snd_action_"+curr_comment+"_"+clip_name][num_comment]);
+			}
+		}
+
+	};
+	
+	//pick a location to move to (start migration) -- least rare
+	if(Math.random()*100 > 98 && idle.visibility == "visible"){
+		
+		if(Math.random()*100 < 70){
+			//play sound for traveling ("i am going to there")
+			fp_snd_travel(frognum);
+		}
+		//get a random x y on screen to migrate to
+		fp_randomTarget(frognum);
+		fp_setFrogAnimation(frognum, "walk");
+		
+		//countdown till cancel
+		window["num_frog0"+String(frognum)+"_cnt"] = 30;
+
+	}
+	//move to location (migrating now)
+	//movement is intentionally jerky because that's cute and clumsy
+	if(Math.random()*100 > 40 && walk.visibility == "visible"){
+		
+		frogvar.style.left = String(num_x+num_distX*.07)+'px';
+		frogvar.style.top = String(num_y+num_distY*.07)+'px';
+		window["num_frog0"+String(frognum)+"_cnt"] -= 1;
+					
+		//check if arrived
+		if(parseInt(frogvar.style.left) == num_targX || parseInt(frogvar.style.top) == num_targY || window["num_frog0"+String(frognum)+"_cnt"] <= 0){
+			fp_setFrogAnimation(frognum, "default");
+		}
+		
+	}
+
+}
 }
